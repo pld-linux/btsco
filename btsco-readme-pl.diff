@@ -1,0 +1,93 @@
+diff -uNr btsco-0.4.orig/README.PL.txt btsco-0.4/README.PL.txt
+--- btsco-0.4.orig/README.PL.txt	1970-01-01 01:00:00.000000000 +0100
++++ btsco-0.4/README.PL.txt	2005-11-15 13:59:57.380276496 +0100
+@@ -0,0 +1,89 @@
++Warszawa 15.XI.2005
++michal.abramowicz@abram.eu.org
++
++1. Wstêp
++Ten dokument zawiera krótkie wskazówki co do u¿ycia
++bezprzewodowego zestawu znanego jako: bluetooth headset
++
++2. Znajdowanie
++Po zainstalowaniu urz±dzenia USB BT Dongle, mo¿na wyszukaæ 
++urz±dzenia bluetooth w okolicy:
++hcitool scan
++	00:0C:78:13:66:A4	HS-790
++
++3. U¿ywanie
++Aby u¿ywaæ takiego zestawu nale¿y mieæ poprawnie skonfigurowany
++pakiet bluez-*, mo¿na wpisaæ podawanie pinu w konfiguracji oraz 
++posiadaæ kernel-*alsa* + pakiety oko³o alsowe (alsa-init) itp.
++
++Po zainstalowaniu kernel-char-btsco-0.4-1@2.6.11.10_6 i za³adowaniu
++modu³u snd-bt-sco dostêp jest prawie mo¿liwy do naszego zestawu.
++Zestaw ten bêdzie widoczny jako druga (je¿eli np posiadamy ju¿
++skonfigurowan± kartê d¼wiêkow±) karta d¼wiêkowa.
++
++Ustawiamy urz±dzenie USB BT Dongle w odpowiedni tryb:
++hciconfig hciXXX voice 0x0060
++
++£±czymy siê do s³uchawki:
++
++btsco2 00:0C:78:13:66:A4
++Device is 1:0
++Voice setting: 0x0060
++RFCOMM channel 1 connected
++
++I ju¿ "teoretycznie" jeste¶my pod³±czeni, moja s³uchawka
++wymaga naci¶niêcia RAZ guzika na obudowie (podczas u¿ywania windows
++zanim zaczniemy wysy³aæ jak±kolwiek tre¶æ do odbiornika, s³uchawka
++wydawa³a d¼wiêk pulsuj±cy, po naci¶niêciu guzika ju¿ mo¿na by³o
++jej u¿ywaæ, z linuksem niestety milczy).
++
++4. Przesy³anie tre¶ci
++Poniewa¿ w moim PC jest to ju¿ druga karta d¼wiêkowa to dostêp
++do miksera jest mo¿liwy w taki oto sposób:
++
++alsamixer -c 1
++
++Przes³aæ d¼wiêk do s³uchawki mo¿na przy pomocy xmms + wtyczki,
++nale¿y tylko skonfigurowaæ wtyczkê ALSA, tak ¿eby d¼wiêk by³
++przekazywany do odpowiedniego urz±dzenia.
++
++Z mikrofonu d¼wiêk mo¿na nagrywaæ na wiele sposobów, ja podam jeden
++sprawdzony z wielu mo¿liwych:
++
++qarecord --device plughw:Headset
++
++5. Dlaczego nie dzia³a?
++Uda³o ci siê po³±czyæ ale nie masz d¼wiêku ?
++Sprawd¼ najpierw czy urz±dzenie USB jest wspierane:
++
++hciconfig hci0 revision
++(mój usb dongle dzia³aj±cy)
++hci0:	Type: USB
++	BD Address: 00:08:1B:00:E0:FC ACL MTU: 192:8 SCO MTU: 64:8
++	HCI 14.7
++	Chip version: BlueCore02-External (ES2)
++	Max key size: 56 bit
++	SCO mapping:  HCI
++
++(mój usb dongle z zestawu, niestety nie dzia³a, mo¿na z niego korzystaæ 
++tylko do zestawiania po³±czeñ miêdzy komórk± GPRS, innymi urz±dzeniami 
++dostêpowymi w celu przes³ania plików lub pozyskania ³±cza do internetu)
++hci0:	Type: USB
++	BD Address: 00:0B:0D:34:6D:19 ACL MTU: 120:20 SCO MTU: 64:0
++	Unsupported manufacturer
++
++Jest to ANYCOM numer CC3032 w zestawie ANYCOM HS-790,
++dzia³a ten zestaw z innym czopkiem !, wiêc tylko te urz±dzenie nie
++jest obs³ugiwane :(
++
++7. SKYPE
++Skype, wybierz np: /dev/dsp1 albo poszukaj w³asnorêcznie, skype dla 
++windows, ma bardziej to miejsce rozbudowane, mo¿na np zrobiæ, ¿e
++d¼wiêk jest kierowany do normalnej karty d¼wiêkowej, a mikrofon jest
++w zestawie s³uchawkowym, w wersji linuks nie uda³o mi siê tego osi±gn±æ,
++mo¿e moja motywacja by³a zbyt ma³a.
++
++8. Autor nie ponosi ¿adnej odpowiedzialno¶ci za b³êdy i uszkodzenia
++wynik³e z braku zrozumienia i wiedzy w zakresie u¿ywania urz±dzeñ BlueTooth
++
++9. Podziêkowania dla Ani i zespo³u  PLD, http://www.pld-linux.org
