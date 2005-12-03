@@ -1,9 +1,10 @@
+#
 # Conditional build:
 %bcond_without	dist_kernel	# without kernel from distribution
 %bcond_without	kernel		# don't build kernel modules
+%bcond_without	userspace	# don't build userspace utilities
 %bcond_without	smp		# don't build SMP module
 %bcond_with	verbose		# verbose build (V=1)
-
 #
 Summary:	Bluetooth-alsa Project
 Summary(pl):	Projekt Bluetooth-alsa
@@ -17,15 +18,18 @@ Source0:	http://dl.sourceforge.net/bluetooth-alsa/%{name}-%{version}.tar.gz
 # Source0-md5:	3f46d45db6f0e399044ae6a31b1f23c7
 Patch0:		%{name}-readme-pl.diff
 URL:		http://sourceforge.net/projects/bluetooth-alsa/
-%{?with_dist_kernel:BuildRequires:	kernel-module-build}
-BuildRequires:	bluez-libs-devel >= 2.21-1
-BuildRequires:	libao-devel >= 0.8.6-1
-BuildRequires:	alsa-driver-devel >= 1.0.9-1
-BuildRequires:	alsa-lib-devel >= 1.0.9-1
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libtool
-Requires:	kernel-sound-alsa
+%if %{with kernel}
+%{?with_dist_kernel:BuildRequires:	kernel-module-build}
+%endif
+%if %{with userspace}
+BuildRequires:	alsa-driver-devel >= 1.0.9-1
+BuildRequires:	alsa-lib-devel >= 1.0.9-1
+BuildRequires:	bluez-libs-devel >= 2.21-1
+BuildRequires:	libao-devel >= 0.8.6-1
+%endif
 ExclusiveArch:	%{ix86}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -38,7 +42,7 @@ to and from most headsets.
 %description -l pl
 Dziêki temu oprogramowaniu mo¿na u¿ywaæ zestawów s³uchawkowych
 Bluetooth Headset z Linuksem. Osi±gniêto to dziêki zbudowaniu alsowego
-modu³u do j±dra, który to u¿ywa bluez'a do komunikacji z takim
+modu³u do j±dra, który to u¿ywa systemu bluez do komunikacji z takim
 zestawem. Wspó³pracuje z wiêkszo¶ci± zestawów, ograniczeniem w
 komunikacji jest czêsto urz±dzenie USB, które to mo¿e mieæ
 nieobs³ugiwane czê¶ciowo protoko³y, wskazówka: hciconfig hciXXX
@@ -47,33 +51,35 @@ USB.
 
 %package -n kernel-char-btsco
 Summary:	Linux ALSA kernel driver for Bluetooth Headset
-Summary(pl):	Sterownik ALSA do j±dra linuksa dla Bluetooth Headset
+Summary(pl):	Sterownik ALSA do j±dra Linuksa dla Bluetooth Headset
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
+Requires:	kernel-sound-alsa
 
 %description -n kernel-char-btsco
-Linux ALSA kernel driver for Bluetooth Headset named snd_bt_sco
+Linux ALSA kernel driver for Bluetooth Headset named snd_bt_sco.
 
 %description -n kernel-char-btsco -l pl
-Sterownik ALSA do j±dra linuksa dla Bluetooth Headset o nazwie
-snd_bt_sco
+Sterownik ALSA do j±dra Linuksa dla Bluetooth Headset o nazwie
+snd_bt_sco.
 
 %package -n kernel-smp-char-btsco
 Summary:	Linux ALSA kernel driver for Bluetooth Headset (SMP)
-Summary(pl):	Sterownik ALSA do j±dra linuksa dla Bluetooth Headset (SMP)
+Summary(pl):	Sterownik ALSA do j±dra Linuksa dla Bluetooth Headset (SMP)
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_smp}
 Requires(post,postun):	/sbin/depmod
+Requires:	kernel-smp-sound-alsa
 
 %description -n kernel-smp-char-btsco
-Linux ALSA kernel (SMP) driver for Bluetooth Headset named snd_bt_sco
+Linux ALSA kernel (SMP) driver for Bluetooth Headset named snd_bt_sco.
 
 %description -n kernel-smp-char-btsco -l pl
-Sterownik ALSA do j±dra linuksa SMP dla Bluetooth Headset o nazwie
-snd_bt_sco
+Sterownik ALSA do j±dra Linuksa SMP dla Bluetooth Headset o nazwie
+snd_bt_sco.
 
 %prep
 %setup -q
@@ -86,7 +92,9 @@ snd_bt_sco
 %{__automake}
 %configure
 
+%if %{with userspace}
 %{__make}
+%endif
 
 %if %{with kernel}
 cd kernel
@@ -121,13 +129,17 @@ done
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_bindir},/lib/modules/%{_kernel_ver}{,smp}/misc}
+
+%if %{with userspace}
+install -d $RPM_BUILD_ROOT%{_bindir}
 
 for file in avdtp/avtest sbc/rcplay sbc/sbcenc sbc/sbcinfo a2play btsco2 btsco ; do
 	install $file $RPM_BUILD_ROOT%{_bindir}
 done
+%endif
 
 %if %{with kernel}
+install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/misc
 	%if %{without dist_kernel}
 	for mod in *-nondist.ko; do
 		nmod=$(echo "$mod" | sed -e 's#-nondist##g')
@@ -174,10 +186,12 @@ echo "to %{_sysconfdir}/modprobe.conf"
 %postun -n kernel-smp-char-btsco
 %depmod %{_kernel_ver}
 
+%if %{with userspace}
 %files
 %defattr(644,root,root,755)
 %doc COPYING README README.PL.txt NEWS AUTHORS ChangeLog INSTALL
 %attr(755,root,root) %{_bindir}/*
+%endif
 
 %if %{with kernel}
 %files -n kernel-char-btsco
