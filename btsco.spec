@@ -18,19 +18,17 @@ Source0:	http://dl.sourceforge.net/bluetooth-alsa/%{name}-%{version}.tar.gz
 # Source0-md5:	3f46d45db6f0e399044ae6a31b1f23c7
 Patch0:		%{name}-readme-pl.diff
 URL:		http://sourceforge.net/projects/bluetooth-alsa/
-BuildRequires:	autoconf
-BuildRequires:	automake
-BuildRequires:	libtool
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build}
 %endif
 %if %{with userspace}
 BuildRequires:	alsa-driver-devel >= 1.0.9-1
 BuildRequires:	alsa-lib-devel >= 1.0.9-1
+BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	bluez-libs-devel >= 2.21-1
 BuildRequires:	libao-devel >= 0.8.6-1
 %endif
-ExclusiveArch:	%{ix86}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -86,13 +84,13 @@ snd_bt_sco.
 %patch0 -p1
 
 %build
-%{__libtoolize}
+%if %{with userspace}
 %{__aclocal}
 %{__autoconf}
+%{__autoheader}
 %{__automake}
 %configure
 
-%if %{with userspace}
 %{__make}
 %endif
 
@@ -189,7 +187,7 @@ echo "to %{_sysconfdir}/modprobe.conf"
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
-%doc COPYING README README.PL.txt NEWS AUTHORS ChangeLog INSTALL
+%doc README README.PL.txt
 %attr(755,root,root) %{_bindir}/*
 %endif
 
