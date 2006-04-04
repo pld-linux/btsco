@@ -9,13 +9,13 @@
 Summary:	Bluetooth-alsa Project
 Summary(pl):	Projekt Bluetooth-alsa
 Name:		btsco
-Version:	0.4
+Version:	0.41
 %define	rel	1
 Release:	%{rel}
 License:	GPL
 Group:		Applications/Sound
 Source0:	http://dl.sourceforge.net/bluetooth-alsa/%{name}-%{version}.tar.gz
-# Source0-md5:	3f46d45db6f0e399044ae6a31b1f23c7
+# Source0-md5:	111efb0f7092c92c4dd376eec96aa2e7
 Patch0:		%{name}-readme-pl.diff
 URL:		http://sourceforge.net/projects/bluetooth-alsa/
 %if %{with kernel}
