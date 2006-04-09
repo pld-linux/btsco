@@ -10,7 +10,7 @@ Summary:	Bluetooth-alsa Project
 Summary(pl):	Projekt Bluetooth-alsa
 Name:		btsco
 Version:	0.41
-%define	rel	1
+%define	rel	2
 Release:	%{rel}
 License:	GPL
 Group:		Applications/Sound
@@ -184,14 +184,14 @@ echo "to %{_sysconfdir}/modprobe.conf"
 %depmod %{_kernel_ver}
 
 %post -n kernel-smp-char-btsco
-%depmod %{_kernel_ver}
+%depmod %{_kernel_ver}smp
 echo "after install this package, remember add lines like this:"
 echo "alias snd-card-1 snd-bt-sco"
 echo "alias sound-slot-1 snd-bt-sco"
 echo "to %{_sysconfdir}/modprobe.conf"
 
 %postun -n kernel-smp-char-btsco
-%depmod %{_kernel_ver}
+%depmod %{_kernel_ver}smp
 
 %if %{with userspace}
 %files
