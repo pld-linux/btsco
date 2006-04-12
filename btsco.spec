@@ -6,11 +6,11 @@
 %bcond_without	smp		# don't build SMP module
 %bcond_with	verbose		# verbose build (V=1)
 #
+%define	rel	2
 Summary:	Bluetooth-alsa Project
 Summary(pl):	Projekt Bluetooth-alsa
 Name:		btsco
 Version:	0.41
-%define	rel	2
 Release:	%{rel}
 License:	GPL
 Group:		Applications/Sound
