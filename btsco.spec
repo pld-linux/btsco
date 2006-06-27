@@ -28,6 +28,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bluez-libs-devel >= 2.21-1
 BuildRequires:	libao-devel >= 0.8.6-1
+BuildRequires:	libtool
 %endif
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
