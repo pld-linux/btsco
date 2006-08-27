@@ -6,7 +6,7 @@
 %bcond_without	smp		# don't build SMP module
 %bcond_with	verbose		# verbose build (V=1)
 #
-%define	rel	2
+%define	rel	3
 Summary:	Bluetooth-alsa Project
 Summary(pl):	Projekt Bluetooth-alsa
 Name:		btsco
