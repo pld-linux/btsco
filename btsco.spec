@@ -6,16 +6,16 @@
 %bcond_without	smp		# don't build SMP module
 %bcond_with	verbose		# verbose build (V=1)
 #
-%define	rel	3
+%define	rel	1
 Summary:	Bluetooth-alsa Project
 Summary(pl):	Projekt Bluetooth-alsa
 Name:		btsco
-Version:	0.41
+Version:	0.42
 Release:	%{rel}
 License:	GPL
 Group:		Applications/Sound
 Source0:	http://dl.sourceforge.net/bluetooth-alsa/%{name}-%{version}.tar.gz
-# Source0-md5:	111efb0f7092c92c4dd376eec96aa2e7
+# Source0-md5:	b0b6bc4d6df04468349f2ad320b05fa9
 Patch0:		%{name}-readme-pl.diff
 URL:		http://sourceforge.net/projects/bluetooth-alsa/
 %if %{with kernel}
