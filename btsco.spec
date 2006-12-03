@@ -29,6 +29,7 @@ BuildRequires:	automake
 BuildRequires:	bluez-libs-devel >= 2.21-1
 BuildRequires:	libao-devel >= 0.8.6-1
 BuildRequires:	libtool
+BuildRequires:	rpmbuild(macros) >= 1.330
 %endif
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -96,43 +97,7 @@ snd_bt_sco.
 %endif
 
 %if %{with kernel}
-cd kernel
-# kernel module(s)
-for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
-	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
-		exit 1
-	fi
-	install -d o/include/linux
-	ln -sf %{_kernelsrcdir}/config-$cfg o/.config
-	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
-	ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
-%if %{with dist_kernel}
-	%{__make} -j1 -C %{_kernelsrcdir} O=$PWD/o prepare scripts
-%else
-	install -d o/include/config
-	touch o/include/config/MARKER
-	ln -sf %{_kernelsrcdir}/scripts o/scripts
-%endif
-
-	# patching/creating makefile(s) (optional)
-	%{__make} -C %{_kernelsrcdir} clean \
-		RCS_FIND_IGNORE="-name '*.ko' -o" \
-		SYSSRC=%{_kernelsrcdir} \
-		SYSOUT=$PWD/o \
-		M=$PWD O=$PWD/o \
-		%{?with_verbose:V=1}
-	%{__make} -C %{_kernelsrcdir} modules \
-		CC="%{__cc}" CPP="%{__cpp}" \
-		SYSSRC=%{_kernelsrcdir} \
-		SYSOUT=$PWD/o \
-		M=$PWD O=$PWD/o \
-		%{?with_verbose:V=1}
-
-	for mod in *.ko; do
-		mod=$(echo "$mod" | sed -e 's#\.ko##g')
-		mv $mod.ko ../$mod-$cfg.ko
-	done
-done
+%build_kernel_modules -m snd-bt-sco -C kernel
 %endif
 
 %install
@@ -147,28 +112,7 @@ done
 %endif
 
 %if %{with kernel}
-install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/misc
-	%if %{without dist_kernel}
-	for mod in *-nondist.ko; do
-		nmod=$(echo "$mod" | sed -e 's#-nondist##g')
-		pwd
-		install $mod $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/misc/$nmod
-	done
-	%else
-	for mod in *-up.ko; do
-		nmod=$(echo "$mod" | sed -e 's#-up##g')
-		pwd
-		install $mod $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/misc/$nmod
-	done
-	%endif
-
-	%if %{with smp}
-	for mod in *-smp.ko; do
-		nmod=$(echo "$mod" | sed -e 's#-smp##g')
-		pwd
-		install $mod $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/misc/$nmod
-	done
-	%endif
+%install_kernel_modules -m kernel/snd-bt-sco -d misc
 %endif
 
 %clean
