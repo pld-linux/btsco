@@ -19,7 +19,7 @@ Source0:	http://dl.sourceforge.net/bluetooth-alsa/%{name}-%{version}.tgz
 Patch0:		%{name}-readme-pl.diff
 URL:		http://sourceforge.net/projects/bluetooth-alsa/
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel-module-build}
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build}
 %endif
 %if %{with userspace}
 BuildRequires:	alsa-driver-devel >= 1.0.9-1
@@ -49,35 +49,35 @@ nieobs³ugiwane czê¶ciowo protoko³y, wskazówka: hciconfig hciXXX
 revision. W skrajnym wypadku mo¿na próbowaæ u¿yæ innego urz±dzenia
 USB.
 
-%package -n kernel-char-btsco
+%package -n kernel%{_alt_kernel}-char-btsco
 Summary:	Linux ALSA kernel driver for Bluetooth Headset
 Summary(pl):	Sterownik ALSA do j±dra Linuksa dla Bluetooth Headset
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
-Requires:	kernel-sound-alsa
+Requires:	kernel%{_alt_kernel}-sound-alsa
 
-%description -n kernel-char-btsco
+%description -n kernel%{_alt_kernel}-char-btsco
 Linux ALSA kernel driver for Bluetooth Headset named snd_bt_sco.
 
-%description -n kernel-char-btsco -l pl
+%description -n kernel%{_alt_kernel}-char-btsco -l pl
 Sterownik ALSA do j±dra Linuksa dla Bluetooth Headset o nazwie
 snd_bt_sco.
 
-%package -n kernel-smp-char-btsco
+%package -n kernel%{_alt_kernel}-smp-char-btsco
 Summary:	Linux ALSA kernel driver for Bluetooth Headset (SMP)
 Summary(pl):	Sterownik ALSA do j±dra Linuksa dla Bluetooth Headset (SMP)
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_smp}
 Requires(post,postun):	/sbin/depmod
-Requires:	kernel-smp-sound-alsa
+Requires:	kernel%{_alt_kernel}-smp-sound-alsa
 
-%description -n kernel-smp-char-btsco
+%description -n kernel%{_alt_kernel}-smp-char-btsco
 Linux ALSA kernel (SMP) driver for Bluetooth Headset named snd_bt_sco.
 
-%description -n kernel-smp-char-btsco -l pl
+%description -n kernel%{_alt_kernel}-smp-char-btsco -l pl
 Sterownik ALSA do j±dra Linuksa SMP dla Bluetooth Headset o nazwie
 snd_bt_sco.
 
@@ -118,24 +118,24 @@ done
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -n kernel-char-btsco
+%post -n kernel%{_alt_kernel}-char-btsco
 %depmod %{_kernel_ver}
 echo "after install this package, remember add lines like this:"
 echo "alias snd-card-1 snd-bt-sco"
 echo "alias sound-slot-1 snd-bt-sco"
 echo "to %{_sysconfdir}/modprobe.conf"
 
-%postun -n kernel-char-btsco
+%postun -n kernel%{_alt_kernel}-char-btsco
 %depmod %{_kernel_ver}
 
-%post -n kernel-smp-char-btsco
+%post -n kernel%{_alt_kernel}-smp-char-btsco
 %depmod %{_kernel_ver}smp
 echo "after install this package, remember add lines like this:"
 echo "alias snd-card-1 snd-bt-sco"
 echo "alias sound-slot-1 snd-bt-sco"
 echo "to %{_sysconfdir}/modprobe.conf"
 
-%postun -n kernel-smp-char-btsco
+%postun -n kernel%{_alt_kernel}-smp-char-btsco
 %depmod %{_kernel_ver}smp
 
 %if %{with userspace}
@@ -146,13 +146,13 @@ echo "to %{_sysconfdir}/modprobe.conf"
 %endif
 
 %if %{with kernel}
-%files -n kernel-char-btsco
+%files -n kernel%{_alt_kernel}-char-btsco
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/misc/snd-bt-sco.ko.gz
 %endif
 
 %if %{with smp}
-%files -n kernel-smp-char-btsco
+%files -n kernel%{_alt_kernel}-smp-char-btsco
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}smp/misc/snd-bt-sco.ko.gz
 %endif
