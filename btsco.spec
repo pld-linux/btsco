@@ -8,7 +8,7 @@
 #
 %define	rel	1
 Summary:	Bluetooth-alsa Project
-Summary(pl):	Projekt Bluetooth-alsa
+Summary(pl.UTF-8):   Projekt Bluetooth-alsa
 Name:		btsco
 Version:	0.5
 Release:	%{rel}
@@ -39,19 +39,19 @@ do this currently by making an alsa kernel driver which uses bluez to
 reach the headset. It works well enough now to get voice-quality audio
 to and from most headsets.
 
-%description -l pl
-Dziêki temu oprogramowaniu mo¿na u¿ywaæ zestawów s³uchawkowych
-Bluetooth Headset z Linuksem. Osi±gniêto to dziêki zbudowaniu alsowego
-modu³u do j±dra, który to u¿ywa systemu bluez do komunikacji z takim
-zestawem. Wspó³pracuje z wiêkszo¶ci± zestawów, ograniczeniem w
-komunikacji jest czêsto urz±dzenie USB, które to mo¿e mieæ
-nieobs³ugiwane czê¶ciowo protoko³y, wskazówka: hciconfig hciXXX
-revision. W skrajnym wypadku mo¿na próbowaæ u¿yæ innego urz±dzenia
+%description -l pl.UTF-8
+DziÄ™ki temu oprogramowaniu moÅ¼na uÅ¼ywaÄ‡ zestawÃ³w sÅ‚uchawkowych
+Bluetooth Headset z Linuksem. OsiÄ…gniÄ™to to dziÄ™ki zbudowaniu alsowego
+moduÅ‚u do jÄ…dra, ktÃ³ry to uÅ¼ywa systemu bluez do komunikacji z takim
+zestawem. WspÃ³Å‚pracuje z wiÄ™kszoÅ›ciÄ… zestawÃ³w, ograniczeniem w
+komunikacji jest czÄ™sto urzÄ…dzenie USB, ktÃ³re to moÅ¼e mieÄ‡
+nieobsÅ‚ugiwane czÄ™Å›ciowo protokoÅ‚y, wskazÃ³wka: hciconfig hciXXX
+revision. W skrajnym wypadku moÅ¼na prÃ³bowaÄ‡ uÅ¼yÄ‡ innego urzÄ…dzenia
 USB.
 
 %package -n kernel%{_alt_kernel}-char-btsco
 Summary:	Linux ALSA kernel driver for Bluetooth Headset
-Summary(pl):	Sterownik ALSA do j±dra Linuksa dla Bluetooth Headset
+Summary(pl.UTF-8):   Sterownik ALSA do jÄ…dra Linuksa dla Bluetooth Headset
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_up}
@@ -61,13 +61,13 @@ Requires:	kernel%{_alt_kernel}-sound-alsa
 %description -n kernel%{_alt_kernel}-char-btsco
 Linux ALSA kernel driver for Bluetooth Headset named snd_bt_sco.
 
-%description -n kernel%{_alt_kernel}-char-btsco -l pl
-Sterownik ALSA do j±dra Linuksa dla Bluetooth Headset o nazwie
+%description -n kernel%{_alt_kernel}-char-btsco -l pl.UTF-8
+Sterownik ALSA do jÄ…dra Linuksa dla Bluetooth Headset o nazwie
 snd_bt_sco.
 
 %package -n kernel%{_alt_kernel}-smp-char-btsco
 Summary:	Linux ALSA kernel driver for Bluetooth Headset (SMP)
-Summary(pl):	Sterownik ALSA do j±dra Linuksa dla Bluetooth Headset (SMP)
+Summary(pl.UTF-8):   Sterownik ALSA do jÄ…dra Linuksa dla Bluetooth Headset (SMP)
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_smp}
@@ -77,8 +77,8 @@ Requires:	kernel%{_alt_kernel}-smp-sound-alsa
 %description -n kernel%{_alt_kernel}-smp-char-btsco
 Linux ALSA kernel (SMP) driver for Bluetooth Headset named snd_bt_sco.
 
-%description -n kernel%{_alt_kernel}-smp-char-btsco -l pl
-Sterownik ALSA do j±dra Linuksa SMP dla Bluetooth Headset o nazwie
+%description -n kernel%{_alt_kernel}-smp-char-btsco -l pl.UTF-8
+Sterownik ALSA do jÄ…dra Linuksa SMP dla Bluetooth Headset o nazwie
 snd_bt_sco.
 
 %prep
