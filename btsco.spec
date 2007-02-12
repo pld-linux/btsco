@@ -8,7 +8,7 @@
 #
 %define	rel	1
 Summary:	Bluetooth-alsa Project
-Summary(pl.UTF-8):   Projekt Bluetooth-alsa
+Summary(pl.UTF-8):	Projekt Bluetooth-alsa
 Name:		btsco
 Version:	0.5
 Release:	%{rel}
@@ -51,7 +51,7 @@ USB.
 
 %package -n kernel%{_alt_kernel}-char-btsco
 Summary:	Linux ALSA kernel driver for Bluetooth Headset
-Summary(pl.UTF-8):   Sterownik ALSA do jądra Linuksa dla Bluetooth Headset
+Summary(pl.UTF-8):	Sterownik ALSA do jądra Linuksa dla Bluetooth Headset
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_up}
@@ -67,7 +67,7 @@ snd_bt_sco.
 
 %package -n kernel%{_alt_kernel}-smp-char-btsco
 Summary:	Linux ALSA kernel driver for Bluetooth Headset (SMP)
-Summary(pl.UTF-8):   Sterownik ALSA do jądra Linuksa dla Bluetooth Headset (SMP)
+Summary(pl.UTF-8):	Sterownik ALSA do jądra Linuksa dla Bluetooth Headset (SMP)
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_smp}
