@@ -3,6 +3,7 @@
 %bcond_without	dist_kernel	# without kernel from distribution
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	userspace	# don't build userspace utilities
+%bcond_without	up		# don't build UP module
 %bcond_without	smp		# don't build SMP module
 %bcond_with	verbose		# verbose build (V=1)
 #
@@ -146,9 +147,11 @@ echo "to %{_sysconfdir}/modprobe.conf"
 %endif
 
 %if %{with kernel}
+%if %{with up} || %{without dist_kernel}
 %files -n kernel%{_alt_kernel}-char-btsco
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/misc/snd-bt-sco.ko.gz
+%endif
 %endif
 
 %if %{with smp}
