@@ -3,8 +3,6 @@
 %bcond_without	dist_kernel	# without kernel from distribution
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	userspace	# don't build userspace utilities
-%bcond_without	up		# don't build UP module
-%bcond_without	smp		# don't build SMP module
 %bcond_with	verbose		# verbose build (V=1)
 #
 %define	rel	1
@@ -30,7 +28,7 @@ BuildRequires:	automake
 BuildRequires:	bluez-libs-devel >= 2.21-1
 BuildRequires:	libao-devel >= 0.8.6-1
 BuildRequires:	libtool
-BuildRequires:	rpmbuild(macros) >= 1.330
+BuildRequires:	rpmbuild(macros) >= 1.379
 %endif
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -55,7 +53,7 @@ Summary:	Linux ALSA kernel driver for Bluetooth Headset
 Summary(pl.UTF-8):	Sterownik ALSA do jądra Linuksa dla Bluetooth Headset
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
-%{?with_dist_kernel:%requires_releq_kernel_up}
+%{?with_dist_kernel:%requires_releq_kernel}
 Requires(post,postun):	/sbin/depmod
 Requires:	kernel%{_alt_kernel}-sound-alsa
 
@@ -64,22 +62,6 @@ Linux ALSA kernel driver for Bluetooth Headset named snd_bt_sco.
 
 %description -n kernel%{_alt_kernel}-char-btsco -l pl.UTF-8
 Sterownik ALSA do jądra Linuksa dla Bluetooth Headset o nazwie
-snd_bt_sco.
-
-%package -n kernel%{_alt_kernel}-smp-char-btsco
-Summary:	Linux ALSA kernel driver for Bluetooth Headset (SMP)
-Summary(pl.UTF-8):	Sterownik ALSA do jądra Linuksa dla Bluetooth Headset (SMP)
-Release:	%{rel}@%{_kernel_ver_str}
-Group:		Base/Kernel
-%{?with_dist_kernel:%requires_releq_kernel_smp}
-Requires(post,postun):	/sbin/depmod
-Requires:	kernel%{_alt_kernel}-smp-sound-alsa
-
-%description -n kernel%{_alt_kernel}-smp-char-btsco
-Linux ALSA kernel (SMP) driver for Bluetooth Headset named snd_bt_sco.
-
-%description -n kernel%{_alt_kernel}-smp-char-btsco -l pl.UTF-8
-Sterownik ALSA do jądra Linuksa SMP dla Bluetooth Headset o nazwie
 snd_bt_sco.
 
 %prep
@@ -129,16 +111,6 @@ echo "to %{_sysconfdir}/modprobe.conf"
 %postun -n kernel%{_alt_kernel}-char-btsco
 %depmod %{_kernel_ver}
 
-%post -n kernel%{_alt_kernel}-smp-char-btsco
-%depmod %{_kernel_ver}smp
-echo "after install this package, remember add lines like this:"
-echo "alias snd-card-1 snd-bt-sco"
-echo "alias sound-slot-1 snd-bt-sco"
-echo "to %{_sysconfdir}/modprobe.conf"
-
-%postun -n kernel%{_alt_kernel}-smp-char-btsco
-%depmod %{_kernel_ver}smp
-
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
@@ -147,15 +119,7 @@ echo "to %{_sysconfdir}/modprobe.conf"
 %endif
 
 %if %{with kernel}
-%if %{with up} || %{without dist_kernel}
 %files -n kernel%{_alt_kernel}-char-btsco
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/misc/snd-bt-sco.ko.gz
-%endif
-%endif
-
-%if %{with smp}
-%files -n kernel%{_alt_kernel}-smp-char-btsco
-%defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}smp/misc/snd-bt-sco.ko.gz
 %endif
