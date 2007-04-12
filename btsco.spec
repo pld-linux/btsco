@@ -18,7 +18,7 @@ Source0:	http://dl.sourceforge.net/bluetooth-alsa/%{name}-%{version}.tgz
 Patch0:		%{name}-readme-pl.diff
 URL:		http://sourceforge.net/projects/bluetooth-alsa/
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build}
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 %endif
 %if %{with userspace}
 BuildRequires:	alsa-driver-devel >= 1.0.9-1
