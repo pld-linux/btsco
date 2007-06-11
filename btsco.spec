@@ -5,7 +5,7 @@
 %bcond_without	userspace	# don't build userspace utilities
 %bcond_with	verbose		# verbose build (V=1)
 #
-%define	rel	3
+%define	rel	4
 Summary:	Bluetooth-alsa Project
 Summary(pl.UTF-8):	Projekt Bluetooth-alsa
 Name:		btsco
@@ -16,6 +16,7 @@ Group:		Applications/Sound
 Source0:	http://dl.sourceforge.net/bluetooth-alsa/%{name}-%{version}.tgz
 # Source0-md5:	d9fdd63a9e22ba839a41c8a9b89c2dda
 Patch0:		%{name}-readme-pl.diff
+Patch1:		%{name}-kernel.patch
 URL:		http://sourceforge.net/projects/bluetooth-alsa/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
@@ -67,6 +68,7 @@ snd_bt_sco.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %if %{with userspace}
