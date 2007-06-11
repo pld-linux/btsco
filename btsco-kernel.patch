@@ -1,0 +1,10 @@
+--- btsco-0.5/kernel/btsco.c.org	2007-06-11 19:10:06.000000000 +0200
++++ btsco-0.5/kernel/btsco.c	2007-06-11 19:10:58.000000000 +0200
+@@ -51,6 +51,7 @@
+ #include <linux/time.h>
+ #include <linux/wait.h>
+ #include <linux/socket.h>
++#include <linux/freezer.h>
+ #include <linux/file.h>
+ #include <linux/completion.h>
+ #include <linux/smp_lock.h>
