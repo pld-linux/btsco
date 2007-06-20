@@ -1,5 +1,5 @@
---- btsco-0.5/kernel/btsco.c.org	2007-06-11 19:10:06.000000000 +0200
-+++ btsco-0.5/kernel/btsco.c	2007-06-11 19:10:58.000000000 +0200
+--- btsco.old/kernel/btsco.c	2006-10-28 16:39:27.000000000 +0200
++++ btsco-0.5/kernel/btsco.c	2007-06-20 21:39:24.000000000 +0200
 @@ -51,6 +51,7 @@
  #include <linux/time.h>
  #include <linux/wait.h>
@@ -8,3 +8,44 @@
  #include <linux/file.h>
  #include <linux/completion.h>
  #include <linux/smp_lock.h>
+@@ -124,13 +125,13 @@
+ } snd_card_bt_sco_info_t;
+ 
+ typedef struct snd_card_bt_sco {
+-	snd_card_t *card;
++	struct snd_card_t *card;
+ 	spinlock_t mixer_lock;
+ 	int mixer_volume[MIXER_ADDR_LAST + 1];
+ #ifdef DYNAMIC_COMPRESSION
+-	snd_kcontrol_t *mixer_controls[MIXER_ADDR_LAST + 2 + 1];	/* also loopback and agc */
++	struct snd_kcontrol_t *mixer_controls[MIXER_ADDR_LAST + 2 + 1];	/* also loopback and agc */
+ #else
+-	snd_kcontrol_t *mixer_controls[MIXER_ADDR_LAST + 2 ];	/* also loopback */
++	struct snd_kcontrol_t *mixer_controls[MIXER_ADDR_LAST + 2 ];	/* also loopback */
+ #endif
+ 	volatile int loopback;
+ #ifdef DYNAMIC_COMPRESSION
+@@ -168,17 +169,17 @@
+ 	unsigned int pcm_bps;	/* bytes per second */
+ 	unsigned int pcm_irq_pos;	/* IRQ position */
+ 	unsigned int pcm_buf_pos;	/* position in buffer */
+-	snd_pcm_substream_t *substream;
++	struct snd_pcm_substream_t *substream;
+ } snd_card_bt_sco_pcm_t;
+ 
+-static snd_card_t *snd_bt_sco_cards[SNDRV_CARDS] = SNDRV_DEFAULT_PTR;
++static struct snd_card_t *snd_bt_sco_cards[SNDRV_CARDS] = SNDRV_DEFAULT_PTR;
+ 
+-static int snd_card_bt_sco_playback_trigger(snd_pcm_substream_t *
++static int snd_card_bt_sco_playback_trigger(struct snd_pcm_substream_t *
+ 					    substream, int cmd)
+ {
+-	snd_pcm_runtime_t *runtime = substream->runtime;
+-	snd_card_bt_sco_pcm_t *bspcm = runtime->private_data;
+-	snd_card_bt_sco_t *bt_sco = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime_t *runtime = substream->runtime;
++	struct snd_card_bt_sco_pcm_t *bspcm = runtime->private_data;
++	struct snd_card_bt_sco_t *bt_sco = snd_pcm_substream_chip(substream);
+ 
+ 	dprintk("playback_trigger %d\n", cmd);
+ 
