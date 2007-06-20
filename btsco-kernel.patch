@@ -1,5 +1,5 @@
 --- btsco.old/kernel/btsco.c	2006-10-28 16:39:27.000000000 +0200
-+++ btsco-0.5/kernel/btsco.c	2007-06-20 21:39:24.000000000 +0200
++++ btsco-0.5/kernel/btsco.c	2007-06-20 22:25:34.000000000 +0200
 @@ -51,6 +51,7 @@
  #include <linux/time.h>
  #include <linux/wait.h>
@@ -25,27 +25,184 @@
  #endif
  	volatile int loopback;
  #ifdef DYNAMIC_COMPRESSION
-@@ -168,17 +169,17 @@
+@@ -168,15 +169,15 @@
  	unsigned int pcm_bps;	/* bytes per second */
  	unsigned int pcm_irq_pos;	/* IRQ position */
  	unsigned int pcm_buf_pos;	/* position in buffer */
 -	snd_pcm_substream_t *substream;
-+	struct snd_pcm_substream_t *substream;
++	struct snd_pcm_substream *substream;
  } snd_card_bt_sco_pcm_t;
  
 -static snd_card_t *snd_bt_sco_cards[SNDRV_CARDS] = SNDRV_DEFAULT_PTR;
 +static struct snd_card_t *snd_bt_sco_cards[SNDRV_CARDS] = SNDRV_DEFAULT_PTR;
  
 -static int snd_card_bt_sco_playback_trigger(snd_pcm_substream_t *
-+static int snd_card_bt_sco_playback_trigger(struct snd_pcm_substream_t *
++static int snd_card_bt_sco_playback_trigger(struct snd_pcm_substream *
  					    substream, int cmd)
  {
 -	snd_pcm_runtime_t *runtime = substream->runtime;
--	snd_card_bt_sco_pcm_t *bspcm = runtime->private_data;
--	snd_card_bt_sco_t *bt_sco = snd_pcm_substream_chip(substream);
-+	struct snd_pcm_runtime_t *runtime = substream->runtime;
-+	struct snd_card_bt_sco_pcm_t *bspcm = runtime->private_data;
-+	struct snd_card_bt_sco_t *bt_sco = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	snd_card_bt_sco_pcm_t *bspcm = runtime->private_data;
+ 	snd_card_bt_sco_t *bt_sco = snd_pcm_substream_chip(substream);
  
- 	dprintk("playback_trigger %d\n", cmd);
+@@ -194,10 +195,10 @@
+ 	return 0;
+ }
  
+-static int snd_card_bt_sco_capture_trigger(snd_pcm_substream_t *
++static int snd_card_bt_sco_capture_trigger(struct snd_pcm_substream *
+ 					   substream, int cmd)
+ {
+-	snd_pcm_runtime_t *runtime = substream->runtime;
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	snd_card_bt_sco_pcm_t *bspcm = runtime->private_data;
+ 	snd_card_bt_sco_t *bt_sco = snd_pcm_substream_chip(substream);
+ 
+@@ -215,9 +216,9 @@
+ 	return 0;
+ }
+ 
+-static int snd_card_bt_sco_pcm_prepare(snd_pcm_substream_t * substream)
++static int snd_card_bt_sco_pcm_prepare(struct snd_pcm_substream * substream)
+ {
+-	snd_pcm_runtime_t *runtime = substream->runtime;
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	snd_card_bt_sco_pcm_t *bspcm = runtime->private_data;
+ 	unsigned int bps;
+ 
+@@ -236,12 +237,12 @@
+ 	return 0;
+ }
+ 
+-static int snd_card_bt_sco_playback_prepare(snd_pcm_substream_t * substream)
++static int snd_card_bt_sco_playback_prepare(struct snd_pcm_substream * substream)
+ {
+ 	return snd_card_bt_sco_pcm_prepare(substream);
+ }
+ 
+-static int snd_card_bt_sco_capture_prepare(snd_pcm_substream_t * substream)
++static int snd_card_bt_sco_capture_prepare(struct snd_pcm_substream * substream)
+ {
+ 	dprintk("capture_prepare\n");
+ 	return snd_card_bt_sco_pcm_prepare(substream);
+@@ -311,24 +312,24 @@
+ }
+ 
+ static snd_pcm_uframes_t
+-snd_card_bt_sco_playback_pointer(snd_pcm_substream_t * substream)
++snd_card_bt_sco_playback_pointer(struct snd_pcm_substream * substream)
+ {
+-	snd_pcm_runtime_t *runtime = substream->runtime;
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	snd_card_bt_sco_pcm_t *bspcm = runtime->private_data;
+ 
+ 	return bytes_to_frames(runtime, bspcm->pcm_buf_pos);
+ }
+ 
+ static snd_pcm_uframes_t
+-snd_card_bt_sco_capture_pointer(snd_pcm_substream_t * substream)
++snd_card_bt_sco_capture_pointer(struct snd_pcm_substream * substream)
+ {
+-	snd_pcm_runtime_t *runtime = substream->runtime;
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	snd_card_bt_sco_pcm_t *bspcm = runtime->private_data;
+ 
+ 	return bytes_to_frames(runtime, bspcm->pcm_buf_pos);
+ }
+ 
+-static snd_pcm_hardware_t snd_card_bt_sco_playback = {
++static struct snd_pcm_hardware snd_card_bt_sco_playback = {
+ 	.info = (SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
+ 		 SNDRV_PCM_INFO_MMAP_VALID),
+ 	.formats = SNDRV_PCM_FMTBIT_S16_LE,
+@@ -345,7 +346,7 @@
+ 	.fifo_size = 0,
+ };
+ 
+-static snd_pcm_hardware_t snd_card_bt_sco_capture = {
++static struct snd_pcm_hardware snd_card_bt_sco_capture = {
+ 	.info = (SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
+ 		 SNDRV_PCM_INFO_MMAP_VALID),
+ 	.formats = SNDRV_PCM_FMTBIT_S16_LE,
+@@ -362,15 +363,15 @@
+ 	.fifo_size = 0,
+ };
+ 
+-static void snd_card_bt_sco_runtime_free(snd_pcm_runtime_t * runtime)
++static void snd_card_bt_sco_runtime_free(struct snd_pcm_runtime * runtime)
+ {
+ 	snd_card_bt_sco_pcm_t *bspcm = runtime->private_data;
+ 	kfree(bspcm);
+ }
+ 
+-static int snd_card_bt_sco_playback_open(snd_pcm_substream_t * substream)
++static int snd_card_bt_sco_playback_open(struct snd_pcm_substream * substream)
+ {
+-	snd_pcm_runtime_t *runtime = substream->runtime;
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	snd_card_bt_sco_pcm_t *bspcm;
+ 	snd_card_bt_sco_t *bt_sco = snd_pcm_substream_chip(substream);
+ 
+@@ -401,9 +402,9 @@
+ 	return 0;
+ }
+ 
+-static int snd_card_bt_sco_capture_open(snd_pcm_substream_t * substream)
++static int snd_card_bt_sco_capture_open(struct snd_pcm_substream * substream)
+ {
+-	snd_pcm_runtime_t *runtime = substream->runtime;
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	snd_card_bt_sco_pcm_t *bspcm;
+ 	snd_card_bt_sco_t *bt_sco = snd_pcm_substream_chip(substream);
+ 
+@@ -435,9 +436,9 @@
+ 	return 0;
+ }
+ 
+-static int snd_card_bt_sco_playback_close(snd_pcm_substream_t * substream)
++static int snd_card_bt_sco_playback_close(struct snd_pcm_substream * substream)
+ {
+-	snd_pcm_runtime_t *runtime = substream->runtime;
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	snd_card_bt_sco_t *bt_sco = snd_pcm_substream_chip(substream);
+ 
+ 	snd_assert(bt_sco->playback == NULL,;
+@@ -457,9 +458,9 @@
+ 	return 0;
+ }
+ 
+-static int snd_card_bt_sco_capture_close(snd_pcm_substream_t * substream)
++static int snd_card_bt_sco_capture_close(struct snd_pcm_substream * substream)
+ {
+-	snd_pcm_runtime_t *runtime = substream->runtime;
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_card_bt_sco *bt_sco =
+ 	    (struct snd_card_bt_sco *)substream->private_data;
+ 
+@@ -480,7 +481,7 @@
+ 	return 0;
+ }
+ 
+-static snd_pcm_ops_t snd_card_bt_sco_playback_ops = {
++static struct snd_pcm_ops snd_card_bt_sco_playback_ops = {
+ 	.open = snd_card_bt_sco_playback_open,
+ 	.close = snd_card_bt_sco_playback_close,
+ 	.ioctl = snd_pcm_lib_ioctl,
+@@ -489,7 +490,7 @@
+ 	.pointer = snd_card_bt_sco_playback_pointer,
+ };
+ 
+-static snd_pcm_ops_t snd_card_bt_sco_capture_ops = {
++static struct snd_pcm_ops snd_card_bt_sco_capture_ops = {
+ 	.open = snd_card_bt_sco_capture_open,
+ 	.close = snd_card_bt_sco_capture_close,
+ 	.ioctl = snd_pcm_lib_ioctl,
+@@ -500,7 +501,7 @@
+ 
+ static int __init snd_card_bt_sco_pcm(snd_card_bt_sco_t * bt_sco)
+ {
+-	snd_pcm_t *pcm;
++	struct snd_pcm_t *pcm;
+ 	int err;
+ 
+ 	if ((err =
