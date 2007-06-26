@@ -1,5 +1,5 @@
 --- btsco.old/kernel/btsco.c	2006-10-28 16:39:27.000000000 +0200
-+++ btsco-0.5/kernel/btsco.c	2007-06-20 22:25:34.000000000 +0200
++++ btsco-0.5/kernel/btsco.c	2007-06-26 23:46:48.000000000 +0200
 @@ -51,6 +51,7 @@
  #include <linux/time.h>
  #include <linux/wait.h>
@@ -202,7 +202,199 @@
  static int __init snd_card_bt_sco_pcm(snd_card_bt_sco_t * bt_sco)
  {
 -	snd_pcm_t *pcm;
-+	struct snd_pcm_t *pcm;
++	struct snd_pcm *pcm;
  	int err;
  
  	if ((err =
+@@ -522,8 +523,8 @@
+                                 .get = snd_bt_sco_volume_get, .put = snd_bt_sco_volume_put, \
+                                                                         .private_value = addr }
+ 
+-static int snd_bt_sco_volume_info(snd_kcontrol_t * kcontrol,
+-				  snd_ctl_elem_info_t * uinfo)
++static int snd_bt_sco_volume_info(struct snd_kcontrol * kcontrol,
++				  struct snd_ctl_elem_info * uinfo)
+ {
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+ 	uinfo->count = 1;
+@@ -532,8 +533,8 @@
+ 	return 0;
+ }
+ 
+-static int snd_bt_sco_volume_get(snd_kcontrol_t * kcontrol,
+-				 snd_ctl_elem_value_t * ucontrol)
++static int snd_bt_sco_volume_get(struct snd_kcontrol * kcontrol,
++				 struct snd_ctl_elem_value * ucontrol)
+ {
+ 	snd_card_bt_sco_t *bt_sco = snd_kcontrol_chip(kcontrol);
+ 	unsigned long flags;
+@@ -545,8 +546,8 @@
+ 	return 0;
+ }
+ 
+-static int snd_bt_sco_volume_put(snd_kcontrol_t * kcontrol,
+-				 snd_ctl_elem_value_t * ucontrol)
++static int snd_bt_sco_volume_put(struct snd_kcontrol * kcontrol,
++				 struct snd_ctl_elem_value * ucontrol)
+ {
+ 	snd_card_bt_sco_t *bt_sco = snd_kcontrol_chip(kcontrol);
+ 	unsigned long flags;
+@@ -571,8 +572,8 @@
+ 	return changed;
+ }
+ 
+-static int snd_bt_sco_boolean_info(snd_kcontrol_t * kcontrol,
+-				   snd_ctl_elem_info_t * uinfo)
++static int snd_bt_sco_boolean_info(struct snd_kcontrol * kcontrol,
++				   struct snd_ctl_elem_info * uinfo)
+ {
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
+ 	uinfo->count = 1;
+@@ -581,8 +582,8 @@
+ 	return 0;
+ }
+ 
+-static int snd_bt_sco_loopback_get(snd_kcontrol_t * kcontrol,
+-				   snd_ctl_elem_value_t * ucontrol)
++static int snd_bt_sco_loopback_get(struct snd_kcontrol * kcontrol,
++				   struct snd_ctl_elem_value * ucontrol)
+ {
+ 	snd_card_bt_sco_t *bt_sco = snd_kcontrol_chip(kcontrol);
+ 	unsigned long flags;
+@@ -593,8 +594,8 @@
+ 	return 0;
+ }
+ 
+-static int snd_bt_sco_loopback_put(snd_kcontrol_t * kcontrol,
+-				   snd_ctl_elem_value_t * ucontrol)
++static int snd_bt_sco_loopback_put(struct snd_kcontrol * kcontrol,
++				   struct snd_ctl_elem_value * ucontrol)
+ {
+ 	snd_card_bt_sco_t *bt_sco = snd_kcontrol_chip(kcontrol);
+ 	unsigned long flags;
+@@ -611,8 +612,8 @@
+ }
+ 
+ #ifdef DYNAMIC_COMPRESSION
+-static int snd_bt_sco_agc_get(snd_kcontrol_t * kcontrol,
+-				   snd_ctl_elem_value_t * ucontrol)
++static int snd_bt_sco_agc_get(struct snd_kcontrol * kcontrol,
++				   struct snd_ctl_elem_value * ucontrol)
+ {
+ 	snd_card_bt_sco_t *bt_sco = snd_kcontrol_chip(kcontrol);
+ 	unsigned long flags;
+@@ -623,8 +624,8 @@
+ 	return 0;
+ }
+ 
+-static int snd_bt_sco_agc_put(snd_kcontrol_t * kcontrol,
+-				   snd_ctl_elem_value_t * ucontrol)
++static int snd_bt_sco_agc_put(struct snd_kcontrol * kcontrol,
++				   struct snd_ctl_elem_value * ucontrol)
+ {
+ 	snd_card_bt_sco_t *bt_sco = snd_kcontrol_chip(kcontrol);
+ 	unsigned long flags;
+@@ -641,9 +642,9 @@
+ }
+ #endif
+ 
+-#define BT_SCO_CONTROLS (sizeof(snd_bt_sco_controls)/sizeof(snd_kcontrol_new_t))
++#define BT_SCO_CONTROLS (sizeof(snd_bt_sco_controls)/sizeof(snd_kcontrol_new))
+ 
+-static snd_kcontrol_new_t snd_bt_sco_controls[] = {
++static struct snd_kcontrol_new snd_bt_sco_controls[] = {
+ 	BT_SCO_VOLUME("Master Volume", 0, MIXER_ADDR_MASTER),
+ 	BT_SCO_VOLUME("Mic Volume", 0, MIXER_ADDR_MIC),
+ 	{.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+@@ -667,7 +668,7 @@
+ 
+ int __init snd_card_bt_sco_new_mixer(snd_card_bt_sco_t * bt_sco)
+ {
+-	snd_card_t *card = bt_sco->card;
++	struct snd_card *card = bt_sco->card;
+ 
+ 	unsigned int idx;
+ 	int err;
+@@ -686,17 +687,17 @@
+ 	return 0;
+ }
+ 
+-static int snd_card_bt_open(snd_hwdep_t * hw, struct file *file)
++static int snd_card_bt_open(struct snd_hwdep * hw, struct file *file)
+ {
+ 	return 0;
+ }
+ 
+-static int snd_card_bt_release(snd_hwdep_t * hw, struct file *file)
++static int snd_card_bt_release(struct snd_hwdep * hw, struct file *file)
+ {
+ 	return 0;
+ }
+ 
+-static int snd_card_bt_ioctl(snd_hwdep_t * hw, struct file *file,
++static int snd_card_bt_ioctl(struct snd_hwdep * hw, struct file *file,
+ 			     unsigned int cmd, unsigned long arg)
+ {
+ 	snd_card_bt_sco_t *bt_sco = hw->card->private_data;
+@@ -750,10 +751,10 @@
+ 	return err;
+ }
+ 
+-static long snd_card_bt_write(snd_hwdep_t * hw, const char *buf, long count,
++static long snd_card_bt_write(struct snd_hwdep * hw, const char *buf, long count,
+ 			      loff_t * offset)
+ {
+-	snd_card_bt_sco_t *bt_sco = hw->card->private_data;
++	struct snd_card_bt_sco *bt_sco = hw->card->private_data;
+ 	int mixer_volume[MIXER_ADDR_LAST + 1];
+ 	int retval;
+ 	int i;
+@@ -785,7 +786,7 @@
+ 	return retval;
+ }
+ 
+-static long snd_card_bt_read(snd_hwdep_t * hw, char *buf, long count,
++static long snd_card_bt_read(struct snd_hwdep * hw, char *buf, long count,
+ 			     loff_t * offset)
+ {
+ 	snd_card_bt_sco_t *bt_sco = hw->card->private_data;
+@@ -839,7 +840,7 @@
+ 	return retval;
+ }
+ 
+-static unsigned int snd_card_bt_poll(snd_hwdep_t * hw,
++static unsigned int snd_card_bt_poll(struct snd_hwdep * hw,
+ 				     struct file *file, poll_table * wait)
+ {
+ 	snd_card_bt_sco_t *bt_sco = hw->card->private_data;
+@@ -863,7 +864,7 @@
+ 
+ static int snd_card_bt_sco_thread(void *data)
+ {
+-	snd_card_t *card = (snd_card_t *) data;
++	struct snd_card_t *card = (struct snd_card_t *) data;
+ 	snd_card_bt_sco_t *bt_sco = card->private_data;
+ 	struct socket *sock;
+ 	int len;
+@@ -1117,7 +1118,7 @@
+ 	complete_and_exit(&bt_sco->thread_done, 0);
+ }
+ 
+-static void snd_card_bt_private_free(snd_card_t * card)
++static void snd_card_bt_private_free(struct snd_card * card)
+ {
+ 	snd_card_bt_sco_t *bt_sco = card->private_data;
+ 
+@@ -1139,10 +1140,10 @@
+ 
+ static int __init snd_card_bt_sco_probe(int dev)
+ {
+-	snd_card_t *card;
++	struct snd_card *card;
+ 	snd_card_bt_sco_t *bt_sco;
+ 	int err;
+-	snd_hwdep_t *hw;
++	struct snd_hwdep *hw;
+ 
+ 	card =
+ 	    snd_card_new(index[dev], SNDRV_DEFAULT_STR1,
