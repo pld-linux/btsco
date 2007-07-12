@@ -78,7 +78,7 @@ snd_bt_sco.
 %{__automake}
 %configure
 
-%{__make}
+%{__make} -Wall
 %endif
 
 %if %{with kernel}
