@@ -5,7 +5,7 @@
 %bcond_without	userspace	# don't build userspace utilities
 %bcond_with	verbose		# verbose build (V=1)
 #
-%define		rel	17
+%define		rel	18
 Summary:	Bluetooth-alsa Project
 Summary(pl.UTF-8):	Projekt Bluetooth-alsa
 Name:		btsco
@@ -72,6 +72,7 @@ snd_bt_sco.
 
 %build
 %if %{with userspace}
+%{__libtoolize}
 %{__aclocal}
 %{__autoconf}
 %{__autoheader}
