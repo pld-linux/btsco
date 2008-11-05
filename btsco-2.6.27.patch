@@ -1,0 +1,44 @@
+--- btsco-0.5/kernel/btsco.c.orig	2008-11-05 15:37:14.107515140 +0100
++++ btsco-0.5/kernel/btsco.c	2008-11-05 15:37:14.110848272 +0100
+@@ -719,9 +719,13 @@ static int snd_card_bt_ioctl(struct snd_
+ 		/*  Interrupt any socket operations, so that we may
+ 		 *  change the socket */
+ 		mutex_lock(&bt_sco->sock_sem);
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)
++		kill_pid(find_vpid(bt_sco->thread_pid), SIGINT, 1);
++#else
+ 		kill_proc(bt_sco->thread_pid, SIGINT, 1);
++#endif
+ 		if (bt_sco->sco_sock) {
+-			dprintk("Disposing of previous socket count %d\n",
++			dprintk("Disposing of previous socket count %ld\n",
+ 				file_count(bt_sco->sco_sock->file));
+ 			/* Extra brackets needed here since sockfd_put is a poorly implemented macro */
+ 			sockfd_put(((struct socket *)bt_sco->sco_sock));
+@@ -1112,7 +1116,7 @@ static int snd_card_bt_sco_thread(void *
+ 		   the driver process keeps one, and the app has the socket open.
+ 		 */
+ 		if (file_count(sock->file) != 3) {
+-			dprintk("file_count is %d (expected 3)\n",
++			dprintk("file_count is %ld (expected 3)\n",
+ 				file_count(sock->file));
+ 		}
+ 		fput(sock->file);
+@@ -1132,12 +1136,16 @@ static void snd_card_bt_private_free(str
+ 
+ 	dprintk("private_free, killing thread\n");
+ 	bt_sco->thread_exit = 1;
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)
++	kill_pid(find_vpid(bt_sco->thread_pid), SIGTERM, 1);
++#else
+ 	kill_proc(bt_sco->thread_pid, SIGTERM, 1);
++#endif
+ 	wait_for_completion(&bt_sco->thread_done);
+ 	dprintk("private_free, thread exited\n");
+ 
+ 	if (bt_sco->sco_sock) {
+-		dprintk("shutdown: freeing socket count %d\n",
++		dprintk("shutdown: freeing socket count %ld\n",
+ 			file_count(bt_sco->sco_sock->file));
+ 
+ 		sockfd_put(((struct socket *)bt_sco->sco_sock));
